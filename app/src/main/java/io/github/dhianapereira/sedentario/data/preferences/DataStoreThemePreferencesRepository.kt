@@ -37,8 +37,7 @@ class DataStoreThemePreferencesRepository @Inject constructor(
     }
 
     private fun Preferences.readAppTheme(): AppTheme {
-        val savedTheme = this[Keys.APP_THEME]
-        return AppTheme.entries.firstOrNull { it.name == savedTheme } ?: AppTheme.DARK
+        return AppTheme.fromStorageValue(this[Keys.APP_THEME])
     }
 
     private object Keys {

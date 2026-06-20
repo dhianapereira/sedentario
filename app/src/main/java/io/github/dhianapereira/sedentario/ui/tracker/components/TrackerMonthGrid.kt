@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
 import java.time.LocalDate
@@ -20,16 +21,21 @@ fun TrackerMonthGrid(
     entries: Map<LocalDate, WorkoutActivity>,
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier,
+    cellSpacing: Dp = 8.dp,
 ) {
     val firstDayOffset = month.atDay(1).dayOfWeek.value % 7
     val cells = firstDayOffset + month.lengthOfMonth()
     val rows = (cells + 6) / 7
 
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(cellSpacing),
+    ) {
         repeat(rows) { row ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(cellSpacing),
             ) {
                 repeat(7) { column ->
                     val day = row * 7 + column - firstDayOffset + 1

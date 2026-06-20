@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,8 +40,7 @@ import io.github.dhianapereira.sedentario.model.WorkoutActivity
 import io.github.dhianapereira.sedentario.ui.components.AppHeader
 import io.github.dhianapereira.sedentario.ui.theme.SedentarioTheme
 import io.github.dhianapereira.sedentario.ui.tracker.components.EmojiOption
-import io.github.dhianapereira.sedentario.ui.tracker.components.TrackerMonthGrid
-import io.github.dhianapereira.sedentario.ui.tracker.components.WeekHeader
+import io.github.dhianapereira.sedentario.ui.tracker.components.TrackerCalendar
 import java.time.LocalDate
 
 @Composable
@@ -75,25 +75,42 @@ fun TrackerScreen(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
         ) {
-            Column(
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
-                    .windowInsetsPadding(WindowInsets.safeDrawing)
-                    .padding(horizontal = 28.dp, vertical = 24.dp),
+                    .windowInsetsPadding(WindowInsets.safeDrawing),
             ) {
-                AppHeader(
-                    onSettingsClick = onSettingsClick,
-                )
-                Spacer(modifier = Modifier.height(26.dp))
-                WeekHeader()
-                Spacer(modifier = Modifier.height(12.dp))
-                TrackerMonthGrid(
-                    month = uiState.displayedMonth,
-                    today = uiState.today,
-                    entries = uiState.entries,
-                    selectedDate = uiState.selectedDate,
-                    onDateSelected = onDateSelected,
-                )
+                val compactLayout = maxWidth > maxHeight
+                val horizontalPadding = if (compactLayout) 16.dp else 28.dp
+                val verticalPadding = if (compactLayout) 8.dp else 24.dp
+                val headerSpacing = if (compactLayout) 8.dp else 26.dp
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            horizontal = horizontalPadding,
+                            vertical = verticalPadding,
+                        ),
+                ) {
+                    AppHeader(onSettingsClick = onSettingsClick)
+                    Spacer(modifier = Modifier.height(headerSpacing))
+                    TrackerCalendar(
+                        month = uiState.displayedMonth,
+                        today = uiState.today,
+                        entries = uiState.entries,
+                        selectedDate = uiState.selectedDate,
+                        onDateSelected = onDateSelected,
+                        compactLayout = compactLayout,
+                        modifier = if (compactLayout) {
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1f)
+                        } else {
+                            Modifier.fillMaxWidth()
+                        },
+                    )
+                }
             }
         }
 
@@ -162,6 +179,17 @@ private fun DarkTrackerScreenPreview() {
 @Composable
 private fun LightTrackerScreenPreview() {
     TrackerScreenPreview(darkTheme = false)
+}
+
+@Preview(
+    name = "Landscape",
+    widthDp = 800,
+    heightDp = 360,
+    showBackground = true,
+)
+@Composable
+private fun LandscapeTrackerScreenPreview() {
+    TrackerScreenPreview(darkTheme = true)
 }
 
 @Composable
