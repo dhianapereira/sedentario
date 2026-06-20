@@ -2,10 +2,18 @@ package io.github.dhianapereira.sedentario.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Background = Color(0xFF060607)
-val Surface = Color(0xFF111217)
-val CellEmpty = Color(0xFF1A1B1F)
-val CellLocked = Color(0xFF101114)
-val Purple = Color(0xFF7C3AED)
-val PurpleLight = Color(0xFF8B5CF6)
-val PurpleDark = Color(0xFF4C1D95)
+val DarkBackground = Color(0xFF060607)
+val DarkSurface = Color(0xFF111217)
+val DarkSurfaceVariant = Color(0xFF1A1B1F)
+val DarkPrimary = Color(0xFF8B5CF6)
+val DarkPrimaryContainer = Color(0xFF4C1D95)
+val DarkOutline = Color(0xFF44444D)
+val DarkOutlineVariant = Color(0xFF2B2C33)
+
+val LightBackground = Color(0xFFF7F7FA)
+val LightSurface = Color(0xFFFFFFFF)
+val LightSurfaceVariant = Color(0xFFE9E8EF)
+val LightPrimary = Color(0xFF6D28D9)
+val LightPrimaryContainer = Color(0xFFEDE9FE)
+val LightOutline = Color(0xFF76727E)
+val LightOutlineVariant = Color(0xFFD0CDD6)

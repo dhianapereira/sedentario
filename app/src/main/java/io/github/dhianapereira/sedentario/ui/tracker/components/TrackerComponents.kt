@@ -1,7 +1,6 @@
 package io.github.dhianapereira.sedentario.ui.tracker.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,84 +13,149 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.dhianapereira.sedentario.R
+import io.github.dhianapereira.sedentario.model.AppTheme
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
-import io.github.dhianapereira.sedentario.ui.theme.CellEmpty
-import io.github.dhianapereira.sedentario.ui.theme.CellLocked
-import io.github.dhianapereira.sedentario.ui.theme.Purple
-import io.github.dhianapereira.sedentario.ui.theme.PurpleDark
-import io.github.dhianapereira.sedentario.ui.theme.PurpleLight
 import java.time.LocalDate
 import java.time.YearMonth
 
 @Composable
-fun TrackerHeader(onNewEntryClick: () -> Unit) {
+fun TrackerHeader(
+    appTheme: AppTheme,
+    onThemeSelected: (AppTheme) -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
+        Text(
+            text = "Sedentário",
+            color = MaterialTheme.colorScheme.onBackground,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Black,
             modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(34.dp)
-                    .clip(RoundedCornerShape(7.dp)),
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "Sedentário",
-                color = Color.White,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Black,
-            )
-        }
-        NewEntryButton(onClick = onNewEntryClick)
+        )
+        ThemeMenuButton(
+            appTheme = appTheme,
+            onThemeSelected = onThemeSelected,
+        )
     }
 }
 
 @Composable
-private fun NewEntryButton(onClick: () -> Unit) {
+private fun ThemeMenuButton(
+    appTheme: AppTheme,
+    onThemeSelected: (AppTheme) -> Unit,
+) {
+    var isMenuOpen by remember { mutableStateOf(false) }
     val shape = RoundedCornerShape(8.dp)
-    Row(
-        modifier = Modifier
-            .clip(shape)
-            .border(1.dp, PurpleLight, shape)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Text(
-            text = "+",
-            color = PurpleLight,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Medium,
-        )
-        Text(
-            text = "Novo",
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold,
-        )
+    val primary = MaterialTheme.colorScheme.primary
+
+    Box {
+        Row(
+            modifier = Modifier
+                .clip(shape)
+                .border(1.dp, primary, shape)
+                .clickable { isMenuOpen = true }
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Icon(
+                imageVector = if (appTheme == AppTheme.DARK) {
+                    Icons.Outlined.DarkMode
+                } else {
+                    Icons.Outlined.LightMode
+                },
+                contentDescription = null,
+                tint = primary,
+                modifier = Modifier.size(18.dp),
+            )
+            Text(
+                text = if (appTheme == AppTheme.DARK) "Escuro" else "Claro",
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+
+        DropdownMenu(
+            expanded = isMenuOpen,
+            onDismissRequest = { isMenuOpen = false },
+        ) {
+            ThemeMenuItem(
+                label = "Escuro",
+                theme = AppTheme.DARK,
+                selectedTheme = appTheme,
+                onClick = {
+                    isMenuOpen = false
+                    onThemeSelected(AppTheme.DARK)
+                },
+            )
+            ThemeMenuItem(
+                label = "Claro",
+                theme = AppTheme.LIGHT,
+                selectedTheme = appTheme,
+                onClick = {
+                    isMenuOpen = false
+                    onThemeSelected(AppTheme.LIGHT)
+                },
+            )
+        }
     }
+}
+
+@Composable
+private fun ThemeMenuItem(
+    label: String,
+    theme: AppTheme,
+    selectedTheme: AppTheme,
+    onClick: () -> Unit,
+) {
+    DropdownMenuItem(
+        text = { Text(label) },
+        onClick = onClick,
+        leadingIcon = {
+            Icon(
+                imageVector = if (theme == AppTheme.DARK) {
+                    Icons.Outlined.DarkMode
+                } else {
+                    Icons.Outlined.LightMode
+                },
+                contentDescription = null,
+            )
+        },
+        trailingIcon = {
+            if (theme == selectedTheme) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Selecionado",
+                )
+            }
+        },
+    )
 }
 
 @Composable
@@ -107,7 +171,7 @@ fun WeekHeader() {
             ) {
                 Text(
                     text = label,
-                    color = Color(0xFFA6A2AE),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -170,15 +234,15 @@ private fun DayCell(
 ) {
     val shape = RoundedCornerShape(7.dp)
     val background = when {
-        isLocked -> CellLocked
-        activity != null -> Purple
-        else -> CellEmpty
+        isLocked -> MaterialTheme.colorScheme.surface
+        activity != null -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.surfaceVariant
     }
     val border = when {
-        isToday -> BorderStroke(3.dp, Color.White)
-        isSelected -> BorderStroke(2.dp, PurpleLight)
-        isLocked -> BorderStroke(1.dp, Color(0xFF202127))
-        else -> BorderStroke(1.dp, Color(0xFF2B2C33))
+        isToday -> BorderStroke(3.dp, MaterialTheme.colorScheme.onBackground)
+        isSelected -> BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+        isLocked -> BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        else -> BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     }
 
     Box(
@@ -208,10 +272,20 @@ fun EmojiOption(
             .size(58.dp)
             .semantics { contentDescription = activity.description }
             .clip(shape)
-            .background(if (isSelected) PurpleDark else CellEmpty)
+            .background(
+                if (isSelected) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                },
+            )
             .border(
                 width = if (isSelected) 2.dp else 1.dp,
-                color = if (isSelected) PurpleLight else Color(0xFF2B2C33),
+                color = if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
                 shape = shape,
             )
             .clickable(onClick = onClick),
