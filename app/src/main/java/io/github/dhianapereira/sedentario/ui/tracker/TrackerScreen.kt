@@ -27,13 +27,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.dhianapereira.sedentario.model.AppTheme
+import io.github.dhianapereira.sedentario.R
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
 import io.github.dhianapereira.sedentario.ui.components.AppHeader
 import io.github.dhianapereira.sedentario.ui.theme.SedentarioTheme
@@ -44,8 +45,7 @@ import java.time.LocalDate
 
 @Composable
 fun TrackerRoute(
-    appTheme: AppTheme,
-    onThemeSelected: (AppTheme) -> Unit,
+    onSettingsClick: () -> Unit,
     viewModel: TrackerViewModel = viewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,8 +56,7 @@ fun TrackerRoute(
         onNewEntryClick = viewModel::showEntrySheet,
         onEntrySheetDismiss = viewModel::hideEntrySheet,
         onActivitySelected = viewModel::selectActivity,
-        appTheme = appTheme,
-        onThemeSelected = onThemeSelected,
+        onSettingsClick = onSettingsClick,
     )
 }
 
@@ -69,8 +68,7 @@ fun TrackerScreen(
     onNewEntryClick: () -> Unit,
     onEntrySheetDismiss: () -> Unit,
     onActivitySelected: (WorkoutActivity) -> Unit,
-    appTheme: AppTheme,
-    onThemeSelected: (AppTheme) -> Unit,
+    onSettingsClick: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Surface(
@@ -84,8 +82,7 @@ fun TrackerScreen(
                     .padding(horizontal = 28.dp, vertical = 24.dp),
             ) {
                 AppHeader(
-                    appTheme = appTheme,
-                    onThemeSelected = onThemeSelected,
+                    onSettingsClick = onSettingsClick,
                 )
                 Spacer(modifier = Modifier.height(26.dp))
                 WeekHeader()
@@ -108,7 +105,7 @@ fun TrackerScreen(
                     contentDescription = null,
                 )
             },
-            text = { Text("Novo") },
+            text = { Text(stringResource(R.string.new_entry)) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
@@ -177,8 +174,7 @@ private fun TrackerScreenPreview(darkTheme: Boolean) {
             onNewEntryClick = {},
             onEntrySheetDismiss = {},
             onActivitySelected = {},
-            appTheme = if (darkTheme) AppTheme.DARK else AppTheme.LIGHT,
-            onThemeSelected = {},
+            onSettingsClick = {},
         )
     }
 }

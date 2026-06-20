@@ -9,9 +9,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.dhianapereira.sedentario.R
 
 @Composable
 fun WeekHeader() {
@@ -19,7 +21,7 @@ fun WeekHeader() {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        listOf("D", "S", "T", "Q", "Q", "S", "S").forEach { label ->
+        stringArrayResource(R.array.week_days).forEach { label ->
             Box(
                 modifier = Modifier.weight(1f),
                 contentAlignment = Alignment.Center,

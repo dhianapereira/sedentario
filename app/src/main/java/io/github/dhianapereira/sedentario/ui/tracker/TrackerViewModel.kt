@@ -1,17 +1,14 @@
 package io.github.dhianapereira.sedentario.ui.tracker
 
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
 import java.time.LocalDate
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-@HiltViewModel
-class TrackerViewModel @Inject constructor() : ViewModel() {
+class TrackerViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(TrackerUiState(today = LocalDate.now()))
     val uiState: StateFlow<TrackerUiState> = _uiState.asStateFlow()
 
