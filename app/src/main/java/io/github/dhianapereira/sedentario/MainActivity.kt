@@ -9,9 +9,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.Modifier
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,16 +55,21 @@ class MainActivity : AppCompatActivity() {
             }
 
             SedentarioTheme(darkTheme = isDarkTheme) {
-                AppNavHost(
-                    appTheme = appTheme,
-                    appLanguage = appLanguage,
-                    onThemeSelected = themeViewModel::setTheme,
-                    onLanguageSelected = { language ->
-                        AppCompatDelegate.setApplicationLocales(
-                            LocaleListCompat.forLanguageTags(language.languageTag),
-                        )
-                    },
-                )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    AppNavHost(
+                        appTheme = appTheme,
+                        appLanguage = appLanguage,
+                        onThemeSelected = themeViewModel::setTheme,
+                        onLanguageSelected = { language ->
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.forLanguageTags(language.languageTag),
+                            )
+                        },
+                    )
+                }
             }
         }
     }
