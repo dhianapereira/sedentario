@@ -17,6 +17,16 @@ class ThemeViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     @Test
+    fun `saved theme is exposed in state`() = runTest {
+        val repository = FakeThemePreferencesRepository(AppTheme.SYSTEM)
+        val viewModel = ThemeViewModel(repository)
+
+        advanceUntilIdle()
+
+        assertEquals(AppTheme.SYSTEM, viewModel.appTheme.value)
+    }
+
+    @Test
     fun `selecting light theme persists preference`() = runTest {
         val repository = FakeThemePreferencesRepository(AppTheme.DARK)
         val viewModel = ThemeViewModel(repository)
