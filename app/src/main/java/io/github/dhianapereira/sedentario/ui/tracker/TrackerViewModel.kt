@@ -8,8 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class TrackerViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(TrackerUiState(today = LocalDate.now()))
+class TrackerViewModel internal constructor(
+    todayProvider: () -> LocalDate,
+) : ViewModel() {
+    constructor() : this(LocalDate::now)
+
+    private val _uiState = MutableStateFlow(TrackerUiState(today = todayProvider()))
     val uiState: StateFlow<TrackerUiState> = _uiState.asStateFlow()
 
     fun selectDate(date: LocalDate) {
