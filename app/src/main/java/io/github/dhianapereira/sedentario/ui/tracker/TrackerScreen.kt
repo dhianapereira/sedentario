@@ -35,9 +35,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.dhianapereira.sedentario.model.AppTheme
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
+import io.github.dhianapereira.sedentario.ui.components.AppHeader
 import io.github.dhianapereira.sedentario.ui.theme.SedentarioTheme
 import io.github.dhianapereira.sedentario.ui.tracker.components.EmojiOption
-import io.github.dhianapereira.sedentario.ui.tracker.components.TrackerHeader
 import io.github.dhianapereira.sedentario.ui.tracker.components.TrackerMonthGrid
 import io.github.dhianapereira.sedentario.ui.tracker.components.WeekHeader
 import java.time.LocalDate
@@ -83,7 +83,7 @@ fun TrackerScreen(
                     .windowInsetsPadding(WindowInsets.safeDrawing)
                     .padding(horizontal = 28.dp, vertical = 24.dp),
             ) {
-                TrackerHeader(
+                AppHeader(
                     appTheme = appTheme,
                     onThemeSelected = onThemeSelected,
                 )
