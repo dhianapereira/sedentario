@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material.icons.outlined.SettingsBrightness
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -84,17 +86,13 @@ private fun ThemeMenuButton(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
-                imageVector = if (appTheme == AppTheme.DARK) {
-                    Icons.Outlined.DarkMode
-                } else {
-                    Icons.Outlined.LightMode
-                },
+                imageVector = appTheme.icon,
                 contentDescription = null,
                 tint = primary,
                 modifier = Modifier.size(18.dp),
             )
             Text(
-                text = if (appTheme == AppTheme.DARK) "Escuro" else "Claro",
+                text = appTheme.label,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -105,45 +103,32 @@ private fun ThemeMenuButton(
             expanded = isMenuOpen,
             onDismissRequest = { isMenuOpen = false },
         ) {
-            ThemeMenuItem(
-                label = "Escuro",
-                theme = AppTheme.DARK,
-                selectedTheme = appTheme,
-                onClick = {
-                    isMenuOpen = false
-                    onThemeSelected(AppTheme.DARK)
-                },
-            )
-            ThemeMenuItem(
-                label = "Claro",
-                theme = AppTheme.LIGHT,
-                selectedTheme = appTheme,
-                onClick = {
-                    isMenuOpen = false
-                    onThemeSelected(AppTheme.LIGHT)
-                },
-            )
+            AppTheme.entries.forEach { theme ->
+                ThemeMenuItem(
+                    theme = theme,
+                    selectedTheme = appTheme,
+                    onClick = {
+                        isMenuOpen = false
+                        onThemeSelected(theme)
+                    },
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun ThemeMenuItem(
-    label: String,
     theme: AppTheme,
     selectedTheme: AppTheme,
     onClick: () -> Unit,
 ) {
     DropdownMenuItem(
-        text = { Text(label) },
+        text = { Text(theme.label) },
         onClick = onClick,
         leadingIcon = {
             Icon(
-                imageVector = if (theme == AppTheme.DARK) {
-                    Icons.Outlined.DarkMode
-                } else {
-                    Icons.Outlined.LightMode
-                },
+                imageVector = theme.icon,
                 contentDescription = null,
             )
         },
@@ -157,6 +142,20 @@ private fun ThemeMenuItem(
         },
     )
 }
+
+private val AppTheme.label: String
+    get() = when (this) {
+        AppTheme.SYSTEM -> "Sistema"
+        AppTheme.DARK -> "Escuro"
+        AppTheme.LIGHT -> "Claro"
+    }
+
+private val AppTheme.icon: ImageVector
+    get() = when (this) {
+        AppTheme.SYSTEM -> Icons.Outlined.SettingsBrightness
+        AppTheme.DARK -> Icons.Outlined.DarkMode
+        AppTheme.LIGHT -> Icons.Outlined.LightMode
+    }
 
 @Composable
 fun WeekHeader() {

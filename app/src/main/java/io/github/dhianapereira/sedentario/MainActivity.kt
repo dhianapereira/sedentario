@@ -7,6 +7,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,7 +25,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val appTheme by themeViewModel.appTheme.collectAsStateWithLifecycle()
-            val isDarkTheme = appTheme == AppTheme.DARK
+            val isDarkTheme = when (appTheme) {
+                AppTheme.SYSTEM -> isSystemInDarkTheme()
+                AppTheme.DARK -> true
+                AppTheme.LIGHT -> false
+            }
 
             SideEffect {
                 val systemBarStyle = if (isDarkTheme) {
