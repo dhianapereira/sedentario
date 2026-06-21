@@ -119,6 +119,19 @@ class TrackerViewModelTest {
         assertFalse(state.isEntrySheetVisible)
     }
 
+    @Test
+    fun `selecting the current activity again removes it`() {
+        val viewModel = createViewModel()
+
+        viewModel.selectActivity(WorkoutActivity.RUN)
+        viewModel.showEntrySheet()
+        viewModel.selectActivity(WorkoutActivity.RUN)
+
+        val state = viewModel.uiState.value
+        assertFalse(state.entries.containsKey(today))
+        assertFalse(state.isEntrySheetVisible)
+    }
+
     private fun createViewModel(): TrackerViewModel {
         return TrackerViewModel(todayProvider = { today })
     }
