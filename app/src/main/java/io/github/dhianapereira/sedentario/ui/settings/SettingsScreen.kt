@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -27,8 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.dhianapereira.sedentario.R
 import io.github.dhianapereira.sedentario.model.AppLanguage
+import io.github.dhianapereira.sedentario.model.AppAccentColor
 import io.github.dhianapereira.sedentario.model.AppTheme
 import io.github.dhianapereira.sedentario.ui.settings.components.LanguageSelectionSheet
+import io.github.dhianapereira.sedentario.ui.settings.components.ColorSelectionSheet
 import io.github.dhianapereira.sedentario.ui.settings.components.SettingsHeader
 import io.github.dhianapereira.sedentario.ui.settings.components.SettingsOptionRow
 import io.github.dhianapereira.sedentario.ui.settings.components.ThemeSelectionSheet
@@ -37,15 +40,18 @@ import io.github.dhianapereira.sedentario.ui.theme.labelRes
 
 private enum class SettingsSheet {
     THEME,
+    COLOR,
     LANGUAGE,
 }
 
 @Composable
 fun SettingsScreen(
     appTheme: AppTheme,
+    accentColor: AppAccentColor,
     appLanguage: AppLanguage,
     onBackClick: () -> Unit,
     onThemeSelected: (AppTheme) -> Unit,
+    onColorSelected: (AppAccentColor) -> Unit,
     onLanguageSelected: (AppLanguage) -> Unit,
 ) {
     var openSheet by rememberSaveable { mutableStateOf<SettingsSheet?>(null) }
@@ -69,10 +75,16 @@ fun SettingsScreen(
                 SettingsHeader(onBackClick = onBackClick)
                 Spacer(modifier = Modifier.height(24.dp))
                 SettingsOptionRow(
-                    icon = Icons.Outlined.Palette,
+                    icon = Icons.Outlined.DarkMode,
                     title = stringResource(R.string.theme),
                     value = stringResource(appTheme.labelRes),
                     onClick = { openSheet = SettingsSheet.THEME },
+                )
+                SettingsOptionRow(
+                    icon = Icons.Outlined.Palette,
+                    title = stringResource(R.string.accent_color),
+                    value = stringResource(accentColor.labelRes),
+                    onClick = { openSheet = SettingsSheet.COLOR },
                 )
                 SettingsOptionRow(
                     icon = Icons.Outlined.Language,
@@ -90,6 +102,15 @@ fun SettingsScreen(
             onThemeSelected = { theme ->
                 openSheet = null
                 onThemeSelected(theme)
+            },
+            onDismiss = { openSheet = null },
+        )
+
+        SettingsSheet.COLOR -> ColorSelectionSheet(
+            selectedColor = accentColor,
+            onColorSelected = { color ->
+                openSheet = null
+                onColorSelected(color)
             },
             onDismiss = { openSheet = null },
         )
@@ -113,9 +134,11 @@ private fun SettingsScreenPreview() {
     SedentarioTheme {
         SettingsScreen(
             appTheme = AppTheme.DARK,
+            accentColor = AppAccentColor.PURPLE,
             appLanguage = AppLanguage.PORTUGUESE,
             onBackClick = {},
             onThemeSelected = {},
+            onColorSelected = {},
             onLanguageSelected = {},
         )
     }

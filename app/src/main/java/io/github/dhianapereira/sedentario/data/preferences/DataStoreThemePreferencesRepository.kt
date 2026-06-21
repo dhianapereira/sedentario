@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.dhianapereira.sedentario.model.AppTheme
+import io.github.dhianapereira.sedentario.model.AppAccentColor
 import java.io.IOException
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -30,9 +31,21 @@ class DataStoreThemePreferencesRepository @Inject constructor(
         }
         .map { preferences -> preferences.readAppTheme() }
 
+    override val accentColor: Flow<AppAccentColor> = context.userPreferencesDataStore.data
+        .catch { exception ->
+            if (exception is IOException) emit(emptyPreferences()) else throw exception
+        }
+        .map { preferences -> AppAccentColor.fromStorageValue(preferences[Keys.ACCENT_COLOR]) }
+
     override suspend fun setAppTheme(theme: AppTheme) {
         context.userPreferencesDataStore.edit { preferences ->
             preferences[Keys.APP_THEME] = theme.name
+        }
+    }
+
+    override suspend fun setAccentColor(color: AppAccentColor) {
+        context.userPreferencesDataStore.edit { preferences ->
+            preferences[Keys.ACCENT_COLOR] = color.name
         }
     }
 
@@ -42,5 +55,6 @@ class DataStoreThemePreferencesRepository @Inject constructor(
 
     private object Keys {
         val APP_THEME = stringPreferencesKey("app_theme")
+        val ACCENT_COLOR = stringPreferencesKey("accent_color")
     }
 }
