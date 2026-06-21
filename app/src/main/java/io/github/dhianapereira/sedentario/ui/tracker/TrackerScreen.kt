@@ -14,6 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,6 +58,8 @@ fun TrackerRoute(
     TrackerScreen(
         uiState = uiState,
         onDateSelected = viewModel::selectDate,
+        onPreviousMonth = viewModel::showPreviousMonth,
+        onNextMonth = viewModel::showNextMonth,
         onNewEntryClick = viewModel::showEntrySheet,
         onEntrySheetDismiss = viewModel::hideEntrySheet,
         onActivitySelected = viewModel::selectActivity,
@@ -65,6 +72,8 @@ fun TrackerRoute(
 fun TrackerScreen(
     uiState: TrackerUiState,
     onDateSelected: (LocalDate) -> Unit,
+    onPreviousMonth: () -> Unit,
+    onNextMonth: () -> Unit,
     onNewEntryClick: () -> Unit,
     onEntrySheetDismiss: () -> Unit,
     onActivitySelected: (WorkoutActivity) -> Unit,
@@ -101,6 +110,8 @@ fun TrackerScreen(
                         entries = uiState.entries,
                         selectedDate = uiState.selectedDate,
                         onDateSelected = onDateSelected,
+                        onPreviousMonth = onPreviousMonth,
+                        onNextMonth = onNextMonth,
                         compactLayout = compactLayout,
                         modifier = if (compactLayout) {
                             Modifier
@@ -114,23 +125,30 @@ fun TrackerScreen(
             }
         }
 
-        ExtendedFloatingActionButton(
-            onClick = onNewEntryClick,
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                )
-            },
-            text = { Text(stringResource(R.string.new_entry)) },
+        AnimatedVisibility(
+            visible = uiState.canAddEntry,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
                 .padding(24.dp),
-        )
+            enter = fadeIn() + scaleIn(initialScale = 0.85f),
+            exit = fadeOut() + scaleOut(targetScale = 0.85f),
+        ) {
+            ExtendedFloatingActionButton(
+                onClick = onNewEntryClick,
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                    )
+                },
+                text = { Text(stringResource(R.string.new_entry)) },
+            )
+        }
     }
 
-    if (uiState.isEntrySheetVisible) {
+    val selectedDate = uiState.selectedDate
+    if (uiState.isEntrySheetVisible && selectedDate != null) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
         ModalBottomSheet(
@@ -146,7 +164,7 @@ fun TrackerScreen(
                     .padding(bottom = 36.dp),
             ) {
                 Text(
-                    text = uiState.selectedDate.dayOfMonth.toString().padStart(2, '0'),
+                    text = selectedDate.dayOfMonth.toString().padStart(2, '0'),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -159,7 +177,7 @@ fun TrackerScreen(
                     uiState.availableActivities.forEach { activity ->
                         EmojiOption(
                             activity = activity,
-                            isSelected = uiState.entries[uiState.selectedDate] == activity,
+                            isSelected = uiState.entries[selectedDate] == activity,
                             onClick = { onActivitySelected(activity) },
                         )
                     }
@@ -199,6 +217,8 @@ private fun TrackerScreenPreview(darkTheme: Boolean) {
         TrackerScreen(
             uiState = TrackerUiState(today = today),
             onDateSelected = {},
+            onPreviousMonth = {},
+            onNextMonth = {},
             onNewEntryClick = {},
             onEntrySheetDismiss = {},
             onActivitySelected = {},

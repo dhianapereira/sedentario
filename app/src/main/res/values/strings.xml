@@ -3,6 +3,8 @@
     <string name="app_name">Sedentário</string>
     <string name="new_entry">Novo</string>
     <string name="open_settings">Abrir configurações</string>
+    <string name="previous_month">Mês anterior</string>
+    <string name="next_month">Próximo mês</string>
     <string name="settings">Configurações</string>
     <string name="back">Voltar</string>
     <string name="theme">Tema</string>

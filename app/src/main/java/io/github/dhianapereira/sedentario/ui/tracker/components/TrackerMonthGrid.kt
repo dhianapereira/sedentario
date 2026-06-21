@@ -19,7 +19,7 @@ fun TrackerMonthGrid(
     month: YearMonth,
     today: LocalDate,
     entries: Map<LocalDate, WorkoutActivity>,
-    selectedDate: LocalDate,
+    selectedDate: LocalDate?,
     onDateSelected: (LocalDate) -> Unit,
     modifier: Modifier = Modifier,
     cellSpacing: Dp = 8.dp,
