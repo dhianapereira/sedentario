@@ -68,8 +68,13 @@ class TrackerViewModel internal constructor(
     fun selectActivity(activity: WorkoutActivity) {
         _uiState.update { state ->
             val selectedDate = state.selectedDate ?: return@update state
+            val updatedEntries = if (state.entries[selectedDate] == activity) {
+                state.entries - selectedDate
+            } else {
+                state.entries + (selectedDate to activity)
+            }
             state.copy(
-                entries = state.entries + (selectedDate to activity),
+                entries = updatedEntries,
                 isEntrySheetVisible = false,
             )
         }

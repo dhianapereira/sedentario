@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sedentário</string>
-    <string name="new_entry">Novo</string>
+    <string name="new_entry">Registrar</string>
+    <string name="edit_entry">Editar</string>
+    <string name="new_activity">Registrar atividade</string>
+    <string name="edit_activity">Editar atividade</string>
+    <string name="tap_again_to_remove">Toque novamente no emoji selecionado para remover</string>
     <string name="open_settings">Abrir configurações</string>
     <string name="previous_month">Mês anterior</string>
     <string name="next_month">Próximo mês</string>

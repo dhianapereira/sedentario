@@ -19,8 +19,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.animateContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +50,7 @@ import io.github.dhianapereira.sedentario.ui.theme.SedentarioTheme
 import io.github.dhianapereira.sedentario.ui.tracker.components.EmojiOption
 import io.github.dhianapereira.sedentario.ui.tracker.components.TrackerCalendar
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun TrackerRoute(
@@ -80,6 +84,7 @@ fun TrackerScreen(
     onSettingsClick: () -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
+        val selectedActivity = uiState.selectedDate?.let(uiState.entries::get)
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background,
@@ -138,11 +143,22 @@ fun TrackerScreen(
                 onClick = onNewEntryClick,
                 icon = {
                     Icon(
-                        imageVector = Icons.Default.Add,
+                        imageVector = if (selectedActivity == null) {
+                            Icons.Default.Add
+                        } else {
+                            Icons.Default.Edit
+                        },
                         contentDescription = null,
                     )
                 },
-                text = { Text(stringResource(R.string.new_entry)) },
+                text = {
+                    Text(
+                        stringResource(
+                            if (selectedActivity == null) R.string.new_entry else R.string.edit_entry,
+                        ),
+                    )
+                },
+                modifier = Modifier.animateContentSize(),
             )
         }
     }
@@ -150,6 +166,11 @@ fun TrackerScreen(
     val selectedDate = uiState.selectedDate
     if (uiState.isEntrySheetVisible && selectedDate != null) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val selectedActivity = uiState.entries[selectedDate]
+        val locale = LocalConfiguration.current.locales[0]
+        val formattedDate = selectedDate.format(
+            DateTimeFormatter.ofPattern("dd MMMM yyyy", locale),
+        )
 
         ModalBottomSheet(
             onDismissRequest = onEntrySheetDismiss,
@@ -164,7 +185,16 @@ fun TrackerScreen(
                     .padding(bottom = 36.dp),
             ) {
                 Text(
-                    text = selectedDate.dayOfMonth.toString().padStart(2, '0'),
+                    text = stringResource(
+                        if (selectedActivity == null) R.string.new_activity else R.string.edit_activity,
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = formattedDate,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -177,10 +207,18 @@ fun TrackerScreen(
                     uiState.availableActivities.forEach { activity ->
                         EmojiOption(
                             activity = activity,
-                            isSelected = uiState.entries[selectedDate] == activity,
+                            isSelected = selectedActivity == activity,
                             onClick = { onActivitySelected(activity) },
                         )
                     }
+                }
+                AnimatedVisibility(visible = selectedActivity != null) {
+                    Text(
+                        text = stringResource(R.string.tap_again_to_remove),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(top = 16.dp),
+                    )
                 }
             }
         }
