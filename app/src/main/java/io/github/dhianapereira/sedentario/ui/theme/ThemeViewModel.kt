@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.dhianapereira.sedentario.data.preferences.ThemePreferencesRepository
 import io.github.dhianapereira.sedentario.model.AppTheme
+import io.github.dhianapereira.sedentario.model.AppAccentColor
 import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,9 +22,21 @@ class ThemeViewModel @Inject constructor(
         initialValue = AppTheme.DARK,
     )
 
+    val accentColor: StateFlow<AppAccentColor> = themePreferencesRepository.accentColor.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = AppAccentColor.PURPLE,
+    )
+
     fun setTheme(theme: AppTheme) {
         viewModelScope.launch {
             themePreferencesRepository.setAppTheme(theme)
+        }
+    }
+
+    fun setAccentColor(color: AppAccentColor) {
+        viewModelScope.launch {
+            themePreferencesRepository.setAccentColor(color)
         }
     }
 }

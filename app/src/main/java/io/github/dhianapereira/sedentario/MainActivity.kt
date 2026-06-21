@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val appTheme by themeViewModel.appTheme.collectAsStateWithLifecycle()
+            val accentColor by themeViewModel.accentColor.collectAsStateWithLifecycle()
             val appLanguage = AppLanguage.fromLanguageCode(
                 LocalConfiguration.current.locales[0].language,
             )
@@ -54,15 +55,20 @@ class MainActivity : AppCompatActivity() {
                 )
             }
 
-            SedentarioTheme(darkTheme = isDarkTheme) {
+            SedentarioTheme(
+                darkTheme = isDarkTheme,
+                accentColor = accentColor,
+            ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     AppNavHost(
                         appTheme = appTheme,
+                        accentColor = accentColor,
                         appLanguage = appLanguage,
                         onThemeSelected = themeViewModel::setTheme,
+                        onColorSelected = themeViewModel::setAccentColor,
                         onLanguageSelected = { language ->
                             AppCompatDelegate.setApplicationLocales(
                                 LocaleListCompat.forLanguageTags(language.languageTag),

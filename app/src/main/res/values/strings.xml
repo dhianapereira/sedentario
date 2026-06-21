@@ -12,6 +12,7 @@
     <string name="settings">Configurações</string>
     <string name="back">Voltar</string>
     <string name="theme">Tema</string>
+    <string name="accent_color">Cor principal</string>
     <string name="language">Idioma</string>
     <string name="system_theme">Sistema</string>
     <string name="dark_theme">Escuro</string>
@@ -19,6 +20,15 @@
     <string name="portuguese">Português</string>
     <string name="english">Inglês</string>
     <string name="choose_theme">Escolha o tema</string>
+    <string name="choose_color">Escolha a cor principal</string>
+    <string name="green">Verde</string>
+    <string name="blue">Azul</string>
+    <string name="orange">Laranja</string>
+    <string name="purple">Roxo</string>
+    <string name="green_description">Saúde, bem-estar e evolução gradual</string>
+    <string name="blue_description">Consistência, confiança e calma</string>
+    <string name="orange_description">Energia, movimento e motivação</string>
+    <string name="purple_description">Transformação e mudança pessoal</string>
     <string name="choose_language">Escolha o idioma</string>
     <string name="selected">Selecionado</string>
 

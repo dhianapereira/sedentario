@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.github.dhianapereira.sedentario.model.AppLanguage
+import io.github.dhianapereira.sedentario.model.AppAccentColor
 import io.github.dhianapereira.sedentario.model.AppTheme
 import io.github.dhianapereira.sedentario.ui.settings.SettingsScreen
 import io.github.dhianapereira.sedentario.ui.tracker.TrackerRoute
@@ -23,8 +24,10 @@ private const val TRANSITION_DURATION_MILLIS = 160
 @Composable
 fun AppNavHost(
     appTheme: AppTheme,
+    accentColor: AppAccentColor,
     appLanguage: AppLanguage,
     onThemeSelected: (AppTheme) -> Unit,
+    onColorSelected: (AppAccentColor) -> Unit,
     onLanguageSelected: (AppLanguage) -> Unit,
 ) {
     val navController = rememberNavController()
@@ -56,9 +59,11 @@ fun AppNavHost(
         composable(SETTINGS_ROUTE) {
             SettingsScreen(
                 appTheme = appTheme,
+                accentColor = accentColor,
                 appLanguage = appLanguage,
                 onBackClick = navController::navigateUp,
                 onThemeSelected = onThemeSelected,
+                onColorSelected = onColorSelected,
                 onLanguageSelected = onLanguageSelected,
             )
         }
