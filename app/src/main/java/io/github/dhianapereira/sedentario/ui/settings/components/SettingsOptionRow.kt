@@ -25,14 +25,16 @@ import androidx.compose.ui.unit.sp
 fun SettingsOptionRow(
     icon: ImageVector,
     title: String,
-    value: String,
-    onClick: () -> Unit,
+    value: String? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
+                .then(
+                    if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
+                )
                 .padding(vertical = 18.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -49,17 +51,21 @@ fun SettingsOptionRow(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 16.sp,
                 )
-                Text(
-                    text = value,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 14.sp,
+                value?.let {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp,
+                    )
+                }
+            }
+            if (onClick != null) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     }

@@ -10,6 +10,12 @@
     <string name="previous_month">Mês anterior</string>
     <string name="next_month">Próximo mês</string>
     <string name="settings">Configurações</string>
+    <string name="appearance">Aparência</string>
+    <string name="preferences">Preferências</string>
+    <string name="legal">Legal</string>
+    <string name="privacy_policy">Política de privacidade</string>
+    <string name="terms_of_use">Termos de uso</string>
+    <string name="app_version">Versão %1$s</string>
     <string name="back">Voltar</string>
     <string name="theme">Tema</string>
     <string name="accent_color">Cor principal</string>
