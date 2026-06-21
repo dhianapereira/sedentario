@@ -15,8 +15,9 @@ internal fun compactCalendarWidth(
     rowCount: Int,
     spacing: Dp,
     headerSpacing: Dp,
+    monthHeaderHeight: Dp = 0.dp,
 ): Dp {
-    val reservedHeight = 24.dp + headerSpacing + spacing * (rowCount - 1)
+    val reservedHeight = monthHeaderHeight + 24.dp + headerSpacing + spacing * (rowCount - 1)
     val availableCellHeight = (maxHeight - reservedHeight).coerceAtLeast(1.dp)
     val cellSize = (availableCellHeight / rowCount).coerceAtMost(48.dp)
     return minOf(maxWidth, cellSize * 7 + spacing * 6)
