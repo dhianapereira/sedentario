@@ -53,12 +53,16 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.datastore:datastore-preferences:1.2.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.navigation:navigation-compose:2.9.8")
+    implementation("androidx.room:room-ktx:2.8.4")
+    implementation("androidx.room:room-runtime:2.8.4")
     implementation("com.google.dagger:hilt-android:2.57.1")
 
     ksp("com.google.dagger:hilt-android-compiler:2.57.1")
+    ksp("androidx.room:room-compiler:2.8.4")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

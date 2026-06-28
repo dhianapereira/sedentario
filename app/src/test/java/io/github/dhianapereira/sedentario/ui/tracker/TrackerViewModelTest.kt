@@ -1,14 +1,26 @@
 package io.github.dhianapereira.sedentario.ui.tracker
 
+import io.github.dhianapereira.sedentario.data.activity.ActivityEntryRepository
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
+import io.github.dhianapereira.sedentario.ui.theme.MainDispatcherRule
 import java.time.LocalDate
 import java.time.YearMonth
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class TrackerViewModelTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val today = LocalDate.of(2026, 6, 20)
 
     @Test
@@ -120,6 +132,18 @@ class TrackerViewModelTest {
     }
 
     @Test
+    fun `entries from repository are shown in state`() = runTest {
+        val repository = FakeActivityEntryRepository()
+        val storedDate = today.minusDays(2)
+        repository.saveEntry(storedDate, WorkoutActivity.WALK)
+
+        val viewModel = createViewModel(repository)
+        advanceUntilIdle()
+
+        assertEquals(WorkoutActivity.WALK, viewModel.uiState.value.entries[storedDate])
+    }
+
+    @Test
     fun `selecting the current activity again removes it`() {
         val viewModel = createViewModel()
 
@@ -132,7 +156,26 @@ class TrackerViewModelTest {
         assertFalse(state.isEntrySheetVisible)
     }
 
-    private fun createViewModel(): TrackerViewModel {
-        return TrackerViewModel(todayProvider = { today })
+    private fun createViewModel(
+        repository: FakeActivityEntryRepository = FakeActivityEntryRepository(),
+    ): TrackerViewModel {
+        return TrackerViewModel(
+            activityEntryRepository = repository,
+            todayProvider = { today },
+        )
+    }
+
+    private class FakeActivityEntryRepository : ActivityEntryRepository {
+        private val mutableEntries = MutableStateFlow<Map<LocalDate, WorkoutActivity>>(emptyMap())
+
+        override val entries: StateFlow<Map<LocalDate, WorkoutActivity>> = mutableEntries
+
+        override suspend fun saveEntry(date: LocalDate, activity: WorkoutActivity) {
+            mutableEntries.value = mutableEntries.value + (date to activity)
+        }
+
+        override suspend fun deleteEntry(date: LocalDate) {
+            mutableEntries.value = mutableEntries.value - date
+        }
     }
 }

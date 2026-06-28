@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -24,17 +29,24 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -43,10 +55,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.dhianapereira.sedentario.R
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
+import io.github.dhianapereira.sedentario.model.WorkoutActivityCategory
 import io.github.dhianapereira.sedentario.ui.components.AppHeader
 import io.github.dhianapereira.sedentario.ui.theme.SedentarioTheme
 import io.github.dhianapereira.sedentario.ui.tracker.components.EmojiOption
@@ -57,7 +70,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TrackerRoute(
     onSettingsClick: () -> Unit,
-    viewModel: TrackerViewModel = viewModel(),
+    viewModel: TrackerViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -182,9 +195,18 @@ fun TrackerScreen(
         val formattedDate = selectedDate.format(
             DateTimeFormatter.ofPattern("dd MMMM yyyy", locale),
         )
+        val activitiesByCategory = uiState.availableActivities.groupBy { it.category }
+        val firstCategory = WorkoutActivityCategory.entries.first { category ->
+            activitiesByCategory[category].orEmpty().isNotEmpty()
+        }
+        var selectedCategory by remember(selectedActivity) {
+            mutableStateOf(selectedActivity?.category ?: firstCategory)
+        }
+        var isCategoryMenuExpanded by remember { mutableStateOf(false) }
 
         ModalBottomSheet(
             onDismissRequest = onEntrySheetDismiss,
+            modifier = Modifier.statusBarsPadding(),
             sheetState = sheetState,
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -192,6 +214,7 @@ fun TrackerScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp)
                     .padding(bottom = 36.dp),
             ) {
@@ -211,16 +234,74 @@ fun TrackerScreen(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Spacer(modifier = Modifier.height(18.dp))
-                FlowRow(
-                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp),
-                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp),
-                ) {
-                    uiState.availableActivities.forEach { activity ->
-                        EmojiOption(
-                            activity = activity,
-                            isSelected = selectedActivity == activity,
-                            onClick = { onActivitySelected(activity) },
+                Text(
+                    text = stringResource(R.string.activity_category),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedButton(
+                        onClick = { isCategoryMenuExpanded = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = stringResource(selectedCategory.labelRes),
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
+                    }
+                    DropdownMenu(
+                        expanded = isCategoryMenuExpanded,
+                        onDismissRequest = { isCategoryMenuExpanded = false },
+                    ) {
+                        WorkoutActivityCategory.entries.forEach { category ->
+                            if (activitiesByCategory[category].orEmpty().isNotEmpty()) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(category.labelRes)) },
+                                    onClick = {
+                                        selectedCategory = category
+                                        isCategoryMenuExpanded = false
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                activitiesByCategory[selectedCategory].orEmpty().let { activities ->
+                    if (activities.isNotEmpty()) {
+                        Text(
+                            text = stringResource(selectedCategory.labelRes),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp),
                         )
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            activities.forEach { activity ->
+                                EmojiOption(
+                                    activity = activity,
+                                    isSelected = selectedActivity == activity,
+                                    onClick = { onActivitySelected(activity) },
+                                )
+                            }
+                        }
                     }
                 }
                 AnimatedVisibility(visible = selectedActivity != null) {
