@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Sedentario.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#111510</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.Sedentario</item>
+    </style>
+</resources>
