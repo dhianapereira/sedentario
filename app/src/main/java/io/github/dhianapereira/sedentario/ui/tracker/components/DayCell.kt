@@ -35,19 +35,23 @@ internal fun DayCell(
     modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(7.dp)
+    val colorScheme = MaterialTheme.colorScheme
     val targetBackground = when {
-        isLocked -> MaterialTheme.colorScheme.surface
-        activity != null -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.surfaceVariant
+        isLocked -> colorScheme.background
+        activity != null -> colorScheme.primaryContainer
+        else -> colorScheme.surfaceVariant
     }
     val targetBorderColor = when {
-        isToday -> MaterialTheme.colorScheme.onBackground
-        isSelected -> MaterialTheme.colorScheme.primary
-        else -> MaterialTheme.colorScheme.outlineVariant
+        isToday -> colorScheme.onBackground
+        isSelected -> colorScheme.primary
+        isLocked -> colorScheme.outline
+        activity != null -> colorScheme.primary.copy(alpha = 0.48f)
+        else -> colorScheme.outlineVariant
     }
     val targetBorderWidth = when {
         isToday -> 3.dp
         isSelected -> 2.dp
+        activity != null -> 1.5.dp
         else -> 1.dp
     }
     val background by animateColorAsState(
@@ -81,7 +85,7 @@ internal fun DayCell(
             label = "activity emoji",
         ) { currentActivity ->
             currentActivity?.let {
-                Text(text = it.emoji, fontSize = 18.sp)
+                Text(text = it.emoji, fontSize = 20.sp)
             }
         }
     }
