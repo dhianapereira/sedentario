@@ -1,21 +1,38 @@
 package io.github.dhianapereira.sedentario.ui.tracker
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.dhianapereira.sedentario.data.activity.ActivityEntryRepository
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
 import java.time.LocalDate
 import java.time.YearMonth
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
+@HiltViewModel
 class TrackerViewModel internal constructor(
+    private val activityEntryRepository: ActivityEntryRepository,
     todayProvider: () -> LocalDate,
 ) : ViewModel() {
-    constructor() : this(LocalDate::now)
+    @Inject constructor(
+        activityEntryRepository: ActivityEntryRepository,
+    ) : this(activityEntryRepository, LocalDate::now)
 
     private val _uiState = MutableStateFlow(TrackerUiState(today = todayProvider()))
     val uiState: StateFlow<TrackerUiState> = _uiState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            activityEntryRepository.entries.collect { entries ->
+                _uiState.update { it.copy(entries = entries) }
+            }
+        }
+    }
 
     fun selectDate(date: LocalDate) {
         _uiState.update { state ->
@@ -66,17 +83,31 @@ class TrackerViewModel internal constructor(
     }
 
     fun selectActivity(activity: WorkoutActivity) {
+        var dateToDelete: LocalDate? = null
+        var entryToSave: Pair<LocalDate, WorkoutActivity>? = null
         _uiState.update { state ->
             val selectedDate = state.selectedDate ?: return@update state
-            val updatedEntries = if (state.entries[selectedDate] == activity) {
-                state.entries - selectedDate
+            if (state.entries[selectedDate] == activity) {
+                dateToDelete = selectedDate
+                entryToSave = null
             } else {
-                state.entries + (selectedDate to activity)
+                dateToDelete = null
+                entryToSave = selectedDate to activity
             }
             state.copy(
-                entries = updatedEntries,
+                entries = if (entryToSave == null) {
+                    state.entries - selectedDate
+                } else {
+                    state.entries + entryToSave
+                },
                 isEntrySheetVisible = false,
             )
+        }
+        viewModelScope.launch {
+            dateToDelete?.let { activityEntryRepository.deleteEntry(it) }
+            entryToSave?.let { (date, selectedActivity) ->
+                activityEntryRepository.saveEntry(date, selectedActivity)
+            }
         }
     }
 }
