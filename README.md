@@ -51,3 +51,9 @@ O projeto utiliza MVVM e organiza a interface por funcionalidade:
 - `ui/settings/`: tela e componentes das configurações.
 - `ui/tracker/`: tela, componentes, estado e `ViewModel` do tracker.
 - `ui/theme/`: cores e tema do Jetpack Compose.
+
+## Licença
+
+O código-fonte está licenciado sob a [Licença MIT](./LICENSE).
+
+O nome "Sedentário", o logotipo, os ícones, as capturas de tela e os elementos de identidade visual não estão cobertos pela Licença MIT e permanecem sob a condição de Todos os direitos reservados.
