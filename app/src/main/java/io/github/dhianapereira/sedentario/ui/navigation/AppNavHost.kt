@@ -14,7 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import io.github.dhianapereira.sedentario.model.AppLanguage
 import io.github.dhianapereira.sedentario.model.AppAccentColor
 import io.github.dhianapereira.sedentario.model.AppTheme
-import io.github.dhianapereira.sedentario.ui.settings.SettingsScreen
+import io.github.dhianapereira.sedentario.ui.settings.SettingsRoute
 import io.github.dhianapereira.sedentario.ui.tracker.TrackerRoute
 
 private const val TRACKER_ROUTE = "tracker"
@@ -57,7 +57,7 @@ fun AppNavHost(
             )
         }
         composable(SETTINGS_ROUTE) {
-            SettingsScreen(
+            SettingsRoute(
                 appTheme = appTheme,
                 accentColor = accentColor,
                 appLanguage = appLanguage,
