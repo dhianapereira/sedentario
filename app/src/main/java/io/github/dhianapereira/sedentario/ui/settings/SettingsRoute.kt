@@ -32,7 +32,7 @@ import io.github.dhianapereira.sedentario.ui.settings.components.ExportDateRange
 import io.github.dhianapereira.sedentario.ui.settings.components.ExportModeSheet
 import io.github.dhianapereira.sedentario.ui.settings.components.ImportModeSheet
 
-private enum class SettingsPage { MAIN, PREFERENCES, DATA_BACKUP, LEGAL }
+private enum class SettingsPage { MAIN, PREFERENCES, DATA_BACKUP, LEGAL, ABOUT }
 
 @Composable
 fun SettingsRoute(
@@ -86,6 +86,7 @@ fun SettingsRoute(
                 onPreferencesClick = { page = SettingsPage.PREFERENCES },
                 onDataBackupClick = { page = SettingsPage.DATA_BACKUP },
                 onLegalClick = { page = SettingsPage.LEGAL },
+                onAboutClick = { page = SettingsPage.ABOUT },
             )
             SettingsPage.PREFERENCES -> PreferencesScreen(
                 appTheme = appTheme,
@@ -102,6 +103,7 @@ fun SettingsRoute(
                 onImportClick = { showImportOptions = true },
             )
             SettingsPage.LEGAL -> LegalScreen(onBackClick = { page = SettingsPage.MAIN })
+            SettingsPage.ABOUT -> AboutScreen(onBackClick = { page = SettingsPage.MAIN })
         }
         SnackbarHost(
             snackbarHostState,
