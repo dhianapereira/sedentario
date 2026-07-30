@@ -17,7 +17,10 @@ import androidx.compose.ui.unit.sp
 import io.github.dhianapereira.sedentario.R
 
 @Composable
-fun SettingsHeader(onBackClick: () -> Unit) {
+fun SettingsHeader(
+    title: String = stringResource(R.string.settings),
+    onBackClick: () -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -29,7 +32,7 @@ fun SettingsHeader(onBackClick: () -> Unit) {
             )
         }
         Text(
-            text = stringResource(R.string.settings),
+            text = title,
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
