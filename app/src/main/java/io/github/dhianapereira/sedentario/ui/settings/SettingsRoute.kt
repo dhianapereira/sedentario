@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.dhianapereira.sedentario.R
@@ -34,6 +35,11 @@ import io.github.dhianapereira.sedentario.ui.settings.components.ImportModeSheet
 
 private enum class SettingsPage { MAIN, PREFERENCES, DATA_BACKUP, LEGAL, ABOUT }
 
+private const val PRIVACY_POLICY_URL =
+    "https://dhianapereira.github.io/apps/sedentario/legal/politica-de-privacidade/"
+private const val TERMS_OF_USE_URL =
+    "https://dhianapereira.github.io/apps/sedentario/legal/termos-de-uso/"
+
 @Composable
 fun SettingsRoute(
     appTheme: AppTheme,
@@ -48,6 +54,7 @@ fun SettingsRoute(
     val backupState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     var page by rememberSaveable { mutableStateOf(SettingsPage.MAIN) }
     var showImportOptions by rememberSaveable { mutableStateOf(false) }
     var showExportOptions by rememberSaveable { mutableStateOf(false) }
@@ -102,7 +109,11 @@ fun SettingsRoute(
                 onExportClick = { showExportOptions = true },
                 onImportClick = { showImportOptions = true },
             )
-            SettingsPage.LEGAL -> LegalScreen(onBackClick = { page = SettingsPage.MAIN })
+            SettingsPage.LEGAL -> LegalScreen(
+                onBackClick = { page = SettingsPage.MAIN },
+                onPrivacyPolicyClick = { uriHandler.openUri(PRIVACY_POLICY_URL) },
+                onTermsOfUseClick = { uriHandler.openUri(TERMS_OF_USE_URL) },
+            )
             SettingsPage.ABOUT -> AboutScreen(onBackClick = { page = SettingsPage.MAIN })
         }
         SnackbarHost(
