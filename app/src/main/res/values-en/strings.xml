@@ -15,6 +15,12 @@
     <string name="preferences_page_description">Appearance, color, and language</string>
     <string name="data_backup_page_description">Export or restore your records</string>
     <string name="legal_page_description">Privacy and terms of use</string>
+    <string name="about">About</string>
+    <string name="about_page_description">Learn about the app and its developer</string>
+    <string name="about_app_description">Sedentário helps you log activities, keep track of your routine, and see your progress in a simple way.</string>
+    <string name="developed_by">Developed by</string>
+    <string name="developer_name">Dhiana Pereira</string>
+    <string name="version">Version</string>
     <string name="legal">Legal</string>
     <string name="data_and_backup">Data and backup</string>
     <string name="export_data">Export data</string>

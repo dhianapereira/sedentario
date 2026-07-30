@@ -15,6 +15,12 @@
     <string name="preferences_page_description">Aparência, cor e idioma</string>
     <string name="data_backup_page_description">Exporte ou restaure seus registros</string>
     <string name="legal_page_description">Privacidade e termos de uso</string>
+    <string name="about">Sobre</string>
+    <string name="about_page_description">Conheça o app e sua desenvolvedora</string>
+    <string name="about_app_description">O Sedentário ajuda você a registrar atividades, acompanhar sua rotina e visualizar sua evolução de forma simples.</string>
+    <string name="developed_by">Desenvolvido por</string>
+    <string name="developer_name">Dhiana Pereira</string>
+    <string name="version">Versão</string>
     <string name="legal">Legal</string>
     <string name="data_and_backup">Dados e backup</string>
     <string name="export_data">Exportar dados</string>

@@ -22,7 +22,9 @@ import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PrivacyTip
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.MaterialTheme
@@ -63,6 +65,7 @@ fun SettingsScreen(
     onPreferencesClick: () -> Unit,
     onDataBackupClick: () -> Unit,
     onLegalClick: () -> Unit,
+    onAboutClick: () -> Unit,
 ) {
     SettingsPage(title = stringResource(R.string.settings), onBackClick = onBackClick) {
         SettingsOptionRow(
@@ -83,7 +86,12 @@ fun SettingsScreen(
             value = stringResource(R.string.legal_page_description),
             onClick = onLegalClick,
         )
-        AppVersion()
+        SettingsOptionRow(
+            icon = Icons.Outlined.Info,
+            title = stringResource(R.string.about),
+            value = stringResource(R.string.about_page_description),
+            onClick = onAboutClick,
+        )
     }
 }
 
@@ -176,6 +184,33 @@ fun LegalScreen(
 }
 
 @Composable
+fun AboutScreen(onBackClick: () -> Unit) {
+    val context = LocalContext.current
+    val versionName = remember(context) {
+        context.packageManager.getPackageInfo(context.packageName, 0).versionName.orEmpty()
+    }
+    SettingsPage(title = stringResource(R.string.about), onBackClick = onBackClick) {
+        Text(
+            text = stringResource(R.string.about_app_description),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            modifier = Modifier.padding(bottom = 24.dp),
+        )
+        SettingsOptionRow(
+            icon = Icons.Outlined.Person,
+            title = stringResource(R.string.developed_by),
+            value = stringResource(R.string.developer_name),
+        )
+        SettingsOptionRow(
+            icon = Icons.Outlined.Info,
+            title = stringResource(R.string.version),
+            value = versionName,
+        )
+    }
+}
+
+@Composable
 private fun SettingsPage(
     title: String,
     onBackClick: () -> Unit,
@@ -204,26 +239,10 @@ private fun SettingsPage(
     }
 }
 
-@Composable
-private fun AppVersion() {
-    val context = LocalContext.current
-    val versionName = remember(context) {
-        context.packageManager.getPackageInfo(context.packageName, 0).versionName.orEmpty()
-    }
-    Spacer(Modifier.height(32.dp))
-    Text(
-        text = stringResource(R.string.app_version, versionName),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        fontSize = 13.sp,
-        textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun SettingsScreenPreview() {
     SedentarioTheme {
-        SettingsScreen({}, {}, {}, {})
+        SettingsScreen({}, {}, {}, {}, {})
     }
 }
