@@ -54,7 +54,7 @@ jobs:
 
       - name: Check out repository
         if: steps.changes.outputs.relevant == 'true'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Java
         if: steps.changes.outputs.relevant == 'true'
