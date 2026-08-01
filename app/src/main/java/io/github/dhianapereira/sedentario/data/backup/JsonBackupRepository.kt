@@ -1,11 +1,11 @@
 package io.github.dhianapereira.sedentario.data.backup
 
 import android.content.Context
-import android.net.Uri
 import android.util.JsonReader
 import android.util.JsonToken
 import android.util.JsonWriter
 import dagger.hilt.android.qualifiers.ApplicationContext
+import androidx.core.net.toUri
 import io.github.dhianapereira.sedentario.data.activity.ActivityEntryDao
 import io.github.dhianapereira.sedentario.data.activity.ActivityEntryEntity
 import io.github.dhianapereira.sedentario.model.WorkoutActivity
@@ -31,7 +31,7 @@ class JsonBackupRepository @Inject constructor(
     }
 
     override suspend fun exportTo(uri: String, range: BackupDateRange?): Int = withContext(Dispatchers.IO) {
-        val documentUri = Uri.parse(uri)
+        val documentUri = uri.toUri()
         val entries = range?.let {
             activityEntryDao.getEntriesBetween(it.startEpochDay, it.endEpochDay)
         } ?: activityEntryDao.getAllEntries()
@@ -70,7 +70,7 @@ class JsonBackupRepository @Inject constructor(
     }
 
     override suspend fun importFrom(uri: String, mode: BackupImportMode): Int = withContext(Dispatchers.IO) {
-        val documentUri = Uri.parse(uri)
+        val documentUri = uri.toUri()
         val entries = try {
             val input = context.contentResolver.openInputStream(documentUri)
                 ?: throw BackupException.CannotOpenFile()

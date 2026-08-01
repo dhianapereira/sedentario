@@ -43,8 +43,14 @@
     <string name="exporting">Exportando dados…</string>
     <string name="importing">Importando dados…</string>
     <string name="keep_app_open">Mantenha o aplicativo aberto até a operação terminar.</string>
-    <string name="export_success">Backup criado com %1$d registros.</string>
-    <string name="import_success">Backup restaurado com %1$d registros.</string>
+    <plurals name="export_success">
+        <item quantity="one">Backup criado com %1$d registro.</item>
+        <item quantity="other">Backup criado com %1$d registros.</item>
+    </plurals>
+    <plurals name="import_success">
+        <item quantity="one">Backup restaurado com %1$d registro.</item>
+        <item quantity="other">Backup restaurado com %1$d registros.</item>
+    </plurals>
     <string name="operation_cancelled">Operação cancelada.</string>
     <string name="invalid_backup">O arquivo não é um backup válido do Sedentário.</string>
     <string name="unsupported_backup">Esta versão do backup ainda não é compatível.</string>
@@ -55,7 +61,6 @@
     <string name="unknown_backup_error">Não foi possível concluir a operação. Seus dados atuais foram preservados.</string>
     <string name="privacy_policy">Política de privacidade</string>
     <string name="terms_of_use">Termos de uso</string>
-    <string name="app_version">Versão %1$s</string>
     <string name="back">Voltar</string>
     <string name="theme">Tema</string>
     <string name="accent_color">Cor principal</string>
@@ -76,7 +81,6 @@
     <string name="orange_description">Energia, movimento e motivação</string>
     <string name="purple_description">Transformação e mudança pessoal</string>
     <string name="choose_language">Escolha o idioma</string>
-    <string name="selected">Selecionado</string>
     <string name="activity_category">Categoria</string>
     <string name="activity_category_movement">Movimento</string>
     <string name="activity_category_sports">Esportes</string>

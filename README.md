@@ -52,6 +52,10 @@ O projeto utiliza MVVM e organiza a interface por funcionalidade:
 - `ui/tracker/`: tela, componentes, estado e `ViewModel` do tracker.
 - `ui/theme/`: cores e tema do Jetpack Compose.
 
+## Releases
+
+O processo de assinatura, criação de tags e publicação automática está documentado em [docs/RELEASE.md](./docs/RELEASE.md).
+
 ## Licença
 
 O código-fonte está licenciado sob a [Licença MIT](./LICENSE).

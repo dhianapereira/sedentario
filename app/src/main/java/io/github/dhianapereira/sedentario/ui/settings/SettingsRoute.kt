@@ -1,5 +1,6 @@
 package io.github.dhianapereira.sedentario.ui.settings
 
+import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.BackHandler
 import androidx.activity.result.contract.ActivityResultContracts
@@ -79,7 +80,7 @@ fun SettingsRoute(
                 pendingExportRange = event.range
                 exportLauncher.launch("sedentario-backup.json")
             } else {
-                snackbarHostState.showSnackbar(context.getString(event.messageRes(), *event.messageArgs()))
+                snackbarHostState.showSnackbar(event.message(context))
             }
         }
     }
@@ -160,20 +161,21 @@ fun SettingsRoute(
     backupState.operation?.let { BackupProgressDialog(it, viewModel::cancel) }
 }
 
-private fun BackupEvent.messageRes(): Int = when (this) {
+private fun BackupEvent.message(context: Context): String = when (this) {
     is BackupEvent.ExportReady -> error("ExportReady does not display a message")
-    is BackupEvent.Completed -> if (operation == BackupOperation.EXPORT) R.string.export_success else R.string.import_success
-    is BackupEvent.Failed -> when (reason) {
+    is BackupEvent.Completed -> context.resources.getQuantityString(
+        if (operation == BackupOperation.EXPORT) R.plurals.export_success else R.plurals.import_success,
+        entryCount,
+        entryCount,
+    )
+    is BackupEvent.Failed -> context.getString(when (reason) {
         FailureReason.INVALID_FILE -> R.string.invalid_backup
         FailureReason.UNSUPPORTED_VERSION -> R.string.unsupported_backup
         FailureReason.TOO_MANY_ENTRIES -> R.string.backup_too_large
         FailureReason.EMPTY_BACKUP -> R.string.empty_backup_restore_blocked
         FailureReason.FILE_ACCESS -> R.string.file_access_error
         FailureReason.UNKNOWN -> R.string.unknown_backup_error
-    }
-    BackupEvent.NoDataInPeriod -> R.string.no_data_in_period
-    BackupEvent.Cancelled -> R.string.operation_cancelled
+    })
+    BackupEvent.NoDataInPeriod -> context.getString(R.string.no_data_in_period)
+    BackupEvent.Cancelled -> context.getString(R.string.operation_cancelled)
 }
-
-private fun BackupEvent.messageArgs(): Array<out Any> =
-    if (this is BackupEvent.Completed) arrayOf(entryCount) else emptyArray()

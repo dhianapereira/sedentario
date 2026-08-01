@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- The brand artwork is intentionally a density-independent, square bitmap. -->
+    <issue id="IconLauncherShape,IconLocation">
+        <ignore path="src/main/res/drawable/logo.png" />
+    </issue>
+</lint>
