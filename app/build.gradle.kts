@@ -1,5 +1,12 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val releaseVersionName = providers.environmentVariable("RELEASE_VERSION_NAME")
+val releaseVersionCode = providers.environmentVariable("RELEASE_VERSION_CODE")
+val releaseKeystorePath = providers.environmentVariable("RELEASE_KEYSTORE_PATH")
+val releaseKeystorePassword = providers.environmentVariable("RELEASE_KEYSTORE_PASSWORD")
+val releaseKeyAlias = providers.environmentVariable("RELEASE_KEY_ALIAS")
+val releaseKeyPassword = providers.environmentVariable("RELEASE_KEY_PASSWORD")
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -16,14 +23,31 @@ android {
         applicationId = "io.github.dhianapereira.sedentario"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = releaseVersionCode.orNull?.toInt() ?: 1
+        versionName = releaseVersionName.orNull ?: "0.1.0"
+    }
+
+    signingConfigs {
+        if (
+            releaseKeystorePath.isPresent &&
+            releaseKeystorePassword.isPresent &&
+            releaseKeyAlias.isPresent &&
+            releaseKeyPassword.isPresent
+        ) {
+            create("release") {
+                storeFile = file(releaseKeystorePath.get())
+                storePassword = releaseKeystorePassword.get()
+                keyAlias = releaseKeyAlias.get()
+                keyPassword = releaseKeyPassword.get()
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfigs.findByName("release")?.let { signingConfig = it }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -33,6 +57,16 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    lint {
+        // Dependency freshness is handled by Dependabot pull requests, where upgrades can be tested.
+        disable += setOf(
+            "AndroidGradlePluginVersion",
+            "GradleDependency",
+            "NewerVersionAvailable",
+            "OldTargetApi",
+        )
     }
 
     androidResources {
