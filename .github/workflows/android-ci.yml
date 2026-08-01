@@ -36,6 +36,7 @@ jobs:
 
             const isIgnored = (path) =>
               path.startsWith('.github/') ||
+              path.startsWith('assets/') ||
               path.startsWith('docs/') ||
               path.startsWith('scripts/') ||
               path.toLowerCase().endsWith('.md');
@@ -49,7 +50,7 @@ jobs:
             core.info(
               relevant
                 ? 'Android-related changes found; running checks.'
-                : 'Only docs, scripts, or workflow files changed; skipping Android checks.'
+                : 'Only assets, docs, scripts, or workflow files changed; skipping Android checks.'
             );
 
       - name: Check out repository
