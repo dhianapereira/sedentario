@@ -105,4 +105,4 @@ As releases são publicadas automaticamente a partir de tags Semantic Versioning
 
 O código-fonte está licenciado sob a [Licença MIT](./LICENSE).
 
-O nome "Sedentário", o logotipo, os ícones, as capturas de tela e os elementos de identidade visual não estão cobertos pela Licença MIT e permanecem sob a condição de Todos os direitos reservados.
+O logotipo, os ícones, as capturas de tela e os elementos de identidade visual não estão cobertos pela Licença MIT e permanecem sob a condição de Todos os direitos reservados.
